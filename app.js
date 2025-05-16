@@ -1,4 +1,7 @@
 const API_KEY="bdca2295fe3404079e7be89972321194";
+
+const DAYS_OF_THE_WEEK = ["sun","mon","tue","wed","thu","fri","sat"];
+
 const getCurrentWeatherData = async()=>{
     const city ="ujjain"
     const response = await fetch (`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
@@ -49,11 +52,72 @@ const loadHourlyForcast= (hourlyForcast)=>{
  hourlyContainer.innerHTML=innerHTMLString;
 }
 
+const calculateDayWiseForcast = (hourlyForcast)=>{
+    let dayWiseForcast = new Map();
+    for (let forcast of hourlyForcast) {
+        const [date] = forcast.dt_txt.split(" ");
+        const dayOfTheWeek = DAYS_OF_THE_WEEK[new Date(date).getDay()]
+        console.log (dayOfTheWeek);
+
+
+        if (dayWiseForcast.has(dayOfTheWeek)){
+            let forcastForTheDay = dayWiseForcast.get(dayOfTheWeek);
+            forcastForTheDay.push(forcast);
+            dayWiseForcast.set(dayOfTheWeek.forcastForTheDay)
+        }
+        else {
+            dayWiseForcast.set(dayOfTheWeek, [forcast]);
+        }
+    }
+    console.log(dayWiseForcast);
+for (let [key, value] of dayWiseForcast){
+    let temp_min = Math.min (...Array.from (value, val=> val.temp_min))
+    let temp_max = Math.max (...Array.from (value, val=> val.temp_max))
+dayWiseForcast.set(key, {temp_min , temp_max, icon:value.find(v=>v.icon).icon})
+}
+console.log(dayWiseForcast)
+return dayWiseForcast;
+
+} 
+
+
+const loadFiveDayForcast = (hourlyForcast)=>{
+console.log(hourlyForcast)
+const dayWiseForcast =calculateDayWiseForcast(hourlyForcast);
+const container = document.querySelector(".five-day-forcast-container")
+let dayWiseInfo = "";
+Array.from(dayWiseForcast).map(([day, { temp_max,temp_min,icon}],index) =>{
+
+    dayWiseInfo += ` <article class="day-wise-forcast">
+            <h3>${index ===0? "today": day}</h3>
+           <img class="icon" src="${createIconUrl(icon)}" alt="icon for the forcast">
+            <p class="min-temp">${temp_min}</p>
+            <p class="max-temp">${temp_max}</p>
+            </article> `;
+})
+container.innerHTML=dayWiseInfo;
+}
+
+const loadFeelsLike =({main:{feels_like}}) =>{
+    let container = document.querySelector("#feels-like");
+    container.querySelector(".feels-like-temp").textContent= formatTemprature(feels_like);
+
+}
+
+
+const loadhumidity =({main:{humidity}}) =>{
+    let container = document.querySelector("#humidity");
+    container.querySelector(".humidity-value").textContent=`${humidity}%`;
+
+}
+
 
 document.addEventListener("DOMContentLoaded",async()=>{
     const CurrentWeather = await getCurrentWeatherData();
    loadCurrentData(CurrentWeather)
    const hourlyforcast= await gethourlyforcast (CurrentWeather);
    loadHourlyForcast(hourlyforcast)
-
+   loadFiveDayForcast(hourlyforcast);
+   loadFeelsLike(CurrentWeather);
+loadhumidity(CurrentWeather);
 })

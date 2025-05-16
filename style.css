@@ -97,12 +97,40 @@ gap: var(--spacing-regular);
 
 #five-day-forcast{
     grid-area: fiveday;
-
+    text-align: center;
 }
-#feels-like-forcast{
+
+#five-day-forcast .five-day-forcast-container{
+    display: grid;
+    grid-auto-flow: row;
+}
+
+.five-day-forcast-container .day-wise-forcast{
+    display: grid;
+    grid-template: auto/repeat(4, 1fr);
+    gap: var(--spacing-regular);
+    place-items: center;
+}
+
+.five-day-forcast-container .day-wise-forcast .min-temp,
+.five-day-forcast-container .day-wise-forcast .max-temp{
+    font-size: var(--font-regular);
+    font-weight: bold;
+}
+.five-day-forcast-container .day-wise-forcast .min-temp{
+    opacity: 50%;
+}
+.five-day-forcast-container .day-wise-forcast .icon{
+    width: 75px;
+    height: 75px;
+}
+
+
+#feels-like{
     grid-area: feelslike;
-
+text-align: center;
 }
-#Humidity-forcast{
+#humidity{
     grid-area: humidity;
+    text-align: center;
 }
