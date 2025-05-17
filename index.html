@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="container">
+
+
+    <input list="cities"  type="search" name="search" id="search" placeholder="search city">
+        <datalist id="cities"></datalist>
+        <option value="ujjain"></option>
+        <option value="mumbai"></option>
+
+        <article id="current-forcast">
+            <h1 class="city">City name</h1>
+            <p class="temp">Temp</p>
+            <p class="description">Description</p>
+            <p class="min-max-temp">high low</p>
+        </article>
+
+
+        <article id="hourly-forcast">
+     <h1>Hourly Forcast</h1>
+
+     <section class="hourly-container">  </section>
+    </article>
+
+        <article id="five-day-forcast">
+            <h1>5-day Forcast</h1>
+            <section class="five-day-forcast-container">
+           <article class="day-wise-forcast">
+            <h3>Today</h3>
+           <img class="icon" src="" alt="">
+            <p class="min-temp">low</p>
+            <p class="max-temp">high</p>
+            </article>
+             <article class="day-wise-forcast">
+            <h3>Tuesday</h3>
+          <img src="" alt="">
+            <p class="min-temp">low</p>
+            <p class="max-temp">high</p>
+            </article>
+        </article>
+            </section>
+
+        <article id="feels-like">
+            <h1>Feels LIke</h1>
+            <p class="feels-like-temp">temp</p>
+        </article>
+        <article id="humidity">
+            <h1>Humidity</h1>
+            <p class="humidity-value">value</p>
+        </article>
+    </main>
+    <script src="/app.js"></script>
+</body>
+</html>
