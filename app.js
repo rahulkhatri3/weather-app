@@ -4,10 +4,10 @@ const DAYS_OF_THE_WEEK = ["sun","mon","tue","wed","thu","fri","sat"];
 let selectedCityText;
 let selectedCity;
 
-const getCities= async (searchText)=> {
-    const response = await fetch  (`http://api.openweathermap.org/geo/1.0/direct?q=${searchText}&limit=&appid=${API_KEY}}`);
+const getCitiesusingGeolocation = async (searchText)=> {
+    const response = await fetch  (`https://api.openweathermap.org/geo/1.0/direct?q=${searchText}&limit=5&appid=${API_KEY}`);
 return response.json();
-} 
+};
 
 const getCurrentWeatherData = async({ lat, lon, name: city })=>{
     const url =
@@ -19,29 +19,29 @@ const getCurrentWeatherData = async({ lat, lon, name: city })=>{
 }
 
 const gethourlyforcast = async({name:city})=>{
-const response = await fetch (`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}`)
-const data = await response.json()
+const response = await fetch (`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`);
+const data = await response.json();
 return data.list.map((forcast)=>{
     const {main:{temp, temp_max,temp_min},dt, dt_txt,weather:[{description,icon}]}=forcast;
-    return{temp,temp_max,temp_min,dt,dt_txt,description,icon }
+    return{temp,temp_max,temp_min,dt,dt_txt,description,icon };
    
 });
 
 };
 
 const formatTemprature = (temp)=> `${temp?. toFixed(1)}`;
- const createIconUrl= (icon)=>`https://openweathermap.org/img/wn/${icon}@2x.png`
+ const createIconUrl= (icon)=>`https://openweathermap.org/img/wn/${icon}@2x.png`;
 
 const loadCurrentData = ({name,main:{temp, temp_max, temp_min}, weather:[{description}]})=>{
 
-    const currentForeCastElement = document.querySelector("#current-forcast");
-    currentForeCastElement.querySelector(".city").textContent=name;
-    currentForeCastElement.querySelector(".temp").textContent=formatTemprature(temp);
-    currentForeCastElement.querySelector(".description").textContent=description;
-    currentForeCastElement.querySelector(".min-max-temp").textContent=`H: ${formatTemprature(temp_max)} L:${formatTemprature(temp_min)}`;
+    const currentForCastElement = document.querySelector("#current-forcast");
+    currentForCastElement.querySelector(".city").textContent=name;
+    currentForCastElement.querySelector(".temp").textContent=formatTemprature(temp);
+    currentForCastElement.querySelector(".description").textContent=description;
+    currentForCastElement.querySelector(".min-max-temp").textContent=`H: ${formatTemprature(temp_max)} L:${formatTemprature(temp_min)}`;
 
 
-}
+};
 
 const loadHourlyForcast = ({ main:{temp:tempNow},weather:[{icon:iconNow}]},hourlyForcast)=>{
     const timeFormatter = Intl.DateTimeFormat("eng", {
@@ -72,7 +72,7 @@ const calculateDayWiseForcast = (hourlyForcast)=>{
     let dayWiseForcast = new Map();
     for (let forcast of hourlyForcast) {
         const [date] = forcast.dt_txt.split(" ");
-        const dayOfTheWeek = DAYS_OF_THE_WEEK[new Date(date).getDay()]
+        const dayOfTheWeek = DAYS_OF_THE_WEEK[new Date(date).getDay()];
 
         if (dayWiseForcast.has(dayOfTheWeek)){
             let forcastForTheDay = dayWiseForcast.get(dayOfTheWeek);
@@ -84,8 +84,8 @@ const calculateDayWiseForcast = (hourlyForcast)=>{
         }
     }
     for (let [key, value] of dayWiseForcast){
-        let temp_min = Math.min (...Array.from (value, (val)=> val.temp_min))
-        let temp_max = Math.max (...Array.from (value, (val)=> val.temp_max))
+        let temp_min = Math.min (...Array.from (value, (val)=> val.temp_min));
+        let temp_max = Math.max (...Array.from (value, (val)=> val.temp_max));
 dayWiseForcast.set(key, {temp_min , temp_max, icon:value.find((v)=>v.icon).icon,
 
 });
@@ -103,7 +103,7 @@ Array.from(dayWiseForcast).map(([day, { temp_max,temp_min,icon}],index) =>{
     if (index < 5){
             dayWiseInfo += ` <article class="day-wise-forcast">
             <h3 class="day">${index ===0? "today": day}</h3>
-           <img class="icon" src="${createIconUrl(icon)}" alt="icon for the forcast">
+           <img class="icon" src="${createIconUrl(icon)}" alt="icon for the forcast"/>
             <p class="min-temp">${temp_min}</p>
             <p class="max-temp">${temp_max}</p>
             </article> `;
@@ -114,22 +114,22 @@ Array.from(dayWiseForcast).map(([day, { temp_max,temp_min,icon}],index) =>{
 }
 );
 container.innerHTML=dayWiseInfo;
-}
+};
 
 const loadFeelsLike =({main:{feels_like}}) =>{
     let container = document.querySelector("#feels-like");
     container.querySelector(".feels-like-temp").textContent= formatTemprature(feels_like);
 
-}
+};
 
 
 const loadhumidity =({main:{humidity}}) =>{
     let container = document.querySelector("#humidity");
     container.querySelector(".humidity-value").textContent=`${humidity}%`;
 
-}
+};
 
-const loadForecastUsingGeolocation = () => {
+const loadForcastUsingGeolocation = () => {
   navigator.geolocation.getCurrentPosition(({ coords }) => {
     const { latitude: lat, longitude: lon } = coords;
     selectedCity = { lat, lon };
@@ -166,7 +166,7 @@ const onSearchChange = async (event) => {
     selectedCityText = "";
   }
   if (value && selectedCityText !== value) {
-    const listOfCities = await getCitiesUsingGeolocation(value);
+    const listOfCities = await getCitiesusingGeolocation(value);
     let options = "";
     for (let { lat, lon, name, state, country } of listOfCities) {
       options += `<option data-city-details='${JSON.stringify({lat, lon, name,  })}' value="${name}, ${state}, ${country}" ></option>`;
@@ -188,7 +188,7 @@ const handleCitySelection =(event)=>{
   }
 };
 const debounceSearch = debounce((event)=> onSearchChange(event));
-loadForecastUsingGeolocation();
+loadForcastUsingGeolocation();
 document.addEventListener("DOMContentLoaded",async()=>{
     const searchInput = document.querySelector("#search");
     searchInput.addEventListener("input",debounceSearch );

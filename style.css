@@ -146,8 +146,8 @@ text-align: center;
     grid-area: humidity;
     text-align: center;
 }
-
- /* @media (width>=650px) {
+/* 
+  @media (width>=650px) {
   .container {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
@@ -157,4 +157,4 @@ text-align: center;
       "hourly hourly fiveday fiveday"
       "feelslike humidity fiveday fiveday";
   }
-}  */
+}   */
