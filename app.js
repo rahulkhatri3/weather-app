@@ -190,7 +190,7 @@ const handleCitySelection =(event)=>{
 const debounceSearch = debounce((event)=> onSearchChange(event));
 loadForcastUsingGeolocation();
 document.addEventListener("DOMContentLoaded",async()=>{
-    const searchInput = document.querySelector("#search");
-    searchInput.addEventListener("input",debounceSearch );
-    searchInput.addEventListener("Change", handleCitySelection);
+  const searchInput = document.querySelector("#search");
+  searchInput.addEventListener("input",debounceSearch );
+  searchInput.addEventListener("change", handleCitySelection);
 });
